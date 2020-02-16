@@ -26,6 +26,7 @@ for layer in Brain:
 
 weights_shape = [layer.shape for layer in weights]
 bias_shape = [layer.shape for layer in biases]
+
 print(weights_shape)
 print(bias_shape)
 
