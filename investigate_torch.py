@@ -55,5 +55,7 @@ print("Biases:\n", biases)
 """
 ############## TODO ##########
  1. Visaulize layers (not biases just weights) by MATPLOTLIB
+
+Reference : https://www.youtube.com/watch?v=3JQ3hYko51Y
 """
 
