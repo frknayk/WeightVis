@@ -1,3 +1,6 @@
+# %%
+%matplotlib inline
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor as MLP
@@ -46,4 +49,8 @@ ax = fig66.gca()
 ax.axis('off')
 
 draw_neural_net(ax, .1, .9, .1, .9, [2,2,1],XOR_MLP.coefs_,XOR_MLP.intercepts_,XOR_MLP.n_iter_,XOR_MLP.loss_,np, plt)
+plt.savefig("fig_nn.png")
 plt.show()
+
+
+# %%
