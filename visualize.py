@@ -3,16 +3,11 @@ import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor as MLP
 from draw_net import draw_neural_net
 
-# X_train = np.random.rand(4,2)
-# y_train = np.dot(X_train, np.random.rand(2,1) )+ 3
 
 X_train = np.random.rand(2,2)
 y_train = np.random.rand(2,)
 
-print(X_train.shape)
-print(y_train.shape)
-
-my_hidden_layer_sizes = (2,)
+my_hidden_layer_sizes = (4,4)
 
 
 XOR_MLP = MLP(
@@ -44,6 +39,6 @@ XOR_MLP.fit(X_train,y_train)
 fig66 = plt.figure(figsize=(12, 12))
 ax = fig66.gca()
 ax.axis('off')
-
-draw_neural_net(ax, .1, .9, .1, .9, [2,2,1],XOR_MLP.coefs_,XOR_MLP.intercepts_,XOR_MLP.n_iter_,XOR_MLP.loss_,np, plt)
+print(len(XOR_MLP.coefs_))
+draw_neural_net(ax, .1, .9, .1, .9, [2,4,4,1],XOR_MLP.coefs_,XOR_MLP.intercepts_,XOR_MLP.n_iter_,XOR_MLP.loss_,np, plt)
 plt.show()
