@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from utils import Bcolors
 
 class Brain:
     """
@@ -24,15 +25,21 @@ class Brain:
         - bias_weights : (list) length (n_layers - 1)The ith element in the list represents the bias vector corresponding to layer i + 1.
         - n_iter: (int) The number of iterations the solver has ran.
         - loss: (float) The current loss computed with the loss function.
-
     """
+
     def __init__(self,nn_weights,nn_bias_weights):
         self.layer_sizes    = None
         self.ax             = None
-        self.left           = 0.1
-        self.right          = 0.9
-        self.bottom         = 0.1
-        self.top            = 0.9
+        
+        # Figure sizes in percentage
+        self.fig_size_x     = 12
+        self.fig_size_y     = 12
+
+        self.left           = 0.1 #*self.fig_size_x 
+        self.right          = 0.9 #*self.fig_size_x 
+        self.bottom         = 0.1 #*self.fig_size_y 
+        self.top            = 0.9 #*self.fig_size_y 
+
         self.offset_all     = [self.left,self.right,self.bottom,self.top]
         self.weights        = nn_weights
         self.bias_weights   = nn_bias_weights
@@ -41,10 +48,8 @@ class Brain:
         self.v_spacing      = None
         self.h_spacing      = None
 
-        # Figure sizes in percentage
-        self.fig_size_x     = 12
-        self.fig_size_y     = 12
-
+        # Beautiful printing
+        self.bcolors = Bcolors()
 
     def visualize(self,loss_ = 999,n_iter_ = 1):
         self.init_graph()
@@ -57,26 +62,31 @@ class Brain:
         self.plot_output_arrows(loss_,n_iter_)
         plt.show()
 
-    # Init plot with dimensions
     def init_graph(self):
+        self.bcolors.print_header("Initiating visualization graphics")
         try :
             fig = plt.figure(figsize=( self.fig_size_x,self.fig_size_y) )
+            print(fig)
             self.ax  = fig.gca()
-            self.ax.axis('off')
+            # self.ax.axis('off')
+            self.ax(autoscale=False)
         except:
             print("Graph could not be set !\nPlease enter the figure sizes correctly") 
 
     def set_figure(self):
         is_figure_set = False
         is_offset_ok = self.is_fig_offsets_ok()
-        is_layer_sizes_ok = self.set_later_sizes()
+        is_layer_sizes_ok = self.set_layer_sizes()
         
         print("Layer Sizes : ",self.layer_sizes)
-
         if is_offset_ok and is_layer_sizes_ok:
+            self.bcolors.print_inform("Visualization graphics are set !")
             self.n_layers  = len(self.layer_sizes)
             self.v_spacing = (self.top - self.bottom)/float(max(self.layer_sizes))
             self.h_spacing = (self.right - self.left)/float(max(self.layer_sizes) - 1)
+            # print("vertical     unit spacing : ",self.v_spacing)
+            # print("horizontal   unit spacing : ",self.h_spacing)
+
             is_figure_set = True
         return is_figure_set
 
@@ -88,7 +98,7 @@ class Brain:
                 break
         return is_correct
 
-    def set_later_sizes(self):
+    def set_layer_sizes(self):
         #TODO : This function has a bug,but it works. WHY ?
         self.layer_sizes = []
         num_of_layers = len(self.weights)
@@ -112,11 +122,16 @@ class Brain:
             return False
 
     def plot_input_arrows(self):
+        self.bcolors.print_ok("Plotting input arrows ..")  
         self.layer_top_0 = self.v_spacing*(self.layer_sizes[0] - 1)/2. + (self.top + self.bottom)/2.
         for m in range(self.layer_sizes[0]):
-            plt.arrow(self.left-0.18, self.layer_top_0 - m*self.v_spacing, 0.12, 0,  lw =1, head_width=0.01, head_length=0.02)
-    
+            arrow_posx = self.left-0.18
+            arrow_posy = self.layer_top_0 - m*self.v_spacing
+            # print(arrow_posx,arrow_posy)
+            plt.arrow(arrow_posx,arrow_posy , 0.12, 0,  lw =1, head_width=0.01, head_length=0.02)
+        
     def plot_nodes(self):
+        self.bcolors.print_ok("Plotting nodes ..")
         for n, layer_size in enumerate(self.layer_sizes):
             layer_top = self.v_spacing*(layer_size - 1)/2. + (self.top + self.bottom)/2.
             for m in range(layer_size):
@@ -132,6 +147,7 @@ class Brain:
                 self.ax.add_artist(circle) 
     
     def plot_bias_nodes(self):
+        self.bcolors.print_ok("Plotting bias nodes ..")
         # Bias-Nodes
         for n, layer_size in enumerate(self.layer_sizes):
             if n < self.n_layers -1:
@@ -144,6 +160,7 @@ class Brain:
                 self.ax.add_artist(circle)   
 
     def plot_edge_node_connections(self):
+        self.bcolors.print_ok("Plotting edge-node connections ..")
         # Edges between nodes
         for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             layer_top_a = self.v_spacing*(layer_size_a - 1)/2. + (self.top + self.bottom)/2.
@@ -176,6 +193,7 @@ class Brain:
                              fontsize = 10)
                              
     def plot_bias_edge_connections(self):
+        self.bcolors.print_ok("Plotting bias-edge connections ..")
         # Edges between bias and nodes
         for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             if n < self.n_layers-1:
@@ -201,6 +219,7 @@ class Brain:
                      fontsize = 10)   
 
     def plot_output_arrows(self,loss,n_iter):
+        self.bcolors.print_ok("Plotting output arrows ..")
         # Output-Arrows
         layer_top_0 = self.v_spacing*(self.layer_sizes[-1] - 1)/2. + (self.top + self.bottom)/2.
         for m in range(self.layer_sizes[-1]):
@@ -210,40 +229,8 @@ class Brain:
                  'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
 
 if __name__ == "__main__":
-    from sklearn.neural_network import MLPRegressor as MLP
-
-    X_train = np.random.rand(2,2)
-    y_train = np.random.rand(2,)
-
-    my_hidden_layer_sizes = (4,4)
-    XOR_MLP = MLP(
-    activation='tanh',
-    alpha=0.99,
-    batch_size='auto',
-    beta_1=0.9,
-    beta_2=0.999,
-    early_stopping=False,
-    epsilon=1e-08,
-    hidden_layer_sizes= my_hidden_layer_sizes,
-    learning_rate='constant',
-    learning_rate_init = 0.1,
-    max_iter=5000,
-    momentum=0.5,
-    nesterovs_momentum=True,
-    power_t=0.5,
-    random_state=0,
-    shuffle=True,
-    solver='sgd',
-    tol=0.0001,
-    validation_fraction=0.1,
-    verbose=False,
-    warm_start=False)
-    #----------[2-2] Training
-    XOR_MLP.fit(X_train,y_train)
-    
     # Read layer weights and bias weights together
-    weights = XOR_MLP.coefs_
-    biases_weights = XOR_MLP.intercepts_
-
-    brain_MLP = Brain(weights,biases_weights)
-    brain_MLP.visualize(XOR_MLP.loss_,XOR_MLP.n_iter_)
+    from torch_vis import Read_Torch
+    torch_weights = Read_Torch("./Models/sample_2") 
+    brain_MLP = Brain(torch_weights.weights_list,torch_weights.biases_list)
+    brain_MLP.visualize()

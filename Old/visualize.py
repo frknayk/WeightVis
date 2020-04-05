@@ -42,16 +42,6 @@ XOR_MLP.fit(X_train,y_train)
 fig66 = plt.figure(figsize=(12, 12))
 ax = fig66.gca()
 ax.axis('off')
-<<<<<<< HEAD
 print(len(XOR_MLP.coefs_))
 draw_neural_net(ax, .1, .9, .1, .9, [2,4,4,1],XOR_MLP.coefs_,XOR_MLP.intercepts_,XOR_MLP.n_iter_,XOR_MLP.loss_,np, plt)
 plt.show()
-=======
-
-draw_neural_net(ax, .1, .9, .1, .9, [2,2,1],XOR_MLP.coefs_,XOR_MLP.intercepts_,XOR_MLP.n_iter_,XOR_MLP.loss_,np, plt)
-plt.savefig("fig_nn.png")
-plt.show()
-
-
-# %%
->>>>>>> b9441b165b0f0818fce9da88b0a4027f8ebb4806
