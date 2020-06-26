@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import Bcolors
+#TODO give credit to asian
+#TODO add verbosity levels for Bcolors 
+#TODO make docstring like numpy
 
 class Brain:
     """
@@ -35,10 +38,10 @@ class Brain:
         self.fig_size_x     = 12
         self.fig_size_y     = 12
 
-        self.left           = 0.1 #*self.fig_size_x 
-        self.right          = 0.9 #*self.fig_size_x 
-        self.bottom         = 0.1 #*self.fig_size_y 
-        self.top            = 0.9 #*self.fig_size_y 
+        self.left           = 0.1
+        self.right          = 0.9
+        self.bottom         = 0.1
+        self.top            = 0.9
 
         self.offset_all     = [self.left,self.right,self.bottom,self.top]
         self.weights        = nn_weights
@@ -66,10 +69,11 @@ class Brain:
         self.bcolors.print_header("Initiating visualization graphics")
         try :
             fig = plt.figure(figsize=( self.fig_size_x,self.fig_size_y) )
-            print(fig)
+            # Get current axes (gca)
             self.ax  = fig.gca()
-            # self.ax.axis('off')
-            self.ax(autoscale=False)
+            self.ax.axis('off')
+            #TODO This gives error: "TypeError: 'AxesSubplot' object is not callable", fig.gca() returns AxesSubplot object
+            # self.ax(autoscale=False)
         except:
             print("Graph could not be set !\nPlease enter the figure sizes correctly") 
 
@@ -99,24 +103,22 @@ class Brain:
         return is_correct
 
     def set_layer_sizes(self):
-        #TODO : This function has a bug,but it works. WHY ?
         self.layer_sizes = []
         num_of_layers = len(self.weights)
-        first_layer_size = None
-        last_layer_size  = None
 
         for i in range(num_of_layers):
             layer_shape = self.weights[i].shape
+
+            # First Layer
             if(i == 0):
-                first_layer_size = layer_shape[0]
-                self.layer_sizes.append(first_layer_size)
-            if(i == num_of_layers):
-                last_layer_size = layer_shape[1]
-            else:
-                layer_size = layer_shape[1]
+                layer_size = layer_shape[0]
                 self.layer_sizes.append(layer_size)
 
-        if( len(self.layer_sizes) > 0 ):
+            # Other layers
+            layer_size = layer_shape[1]
+            self.layer_sizes.append(layer_size)
+
+        if(len(self.layer_sizes) > 0):
             return True
         else:
             return False
@@ -161,6 +163,13 @@ class Brain:
 
     def plot_edge_node_connections(self):
         self.bcolors.print_ok("Plotting edge-node connections ..")
+
+        #TODO Make normalization dynamic
+        np_weights = np.asarray(self.weights)
+        # Normalize to use for alpha(transparency)
+        normalized_weights = (np_weights -  (-0.5093194)) / (0.494668 - (-0.5093194))
+        print(normalized_weights)
+
         # Edges between nodes
         for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             layer_top_a = self.v_spacing*(layer_size_a - 1)/2. + (self.top + self.bottom)/2.
@@ -168,7 +177,7 @@ class Brain:
             for m in range(layer_size_a):
                 for o in range(layer_size_b):
                     line = plt.Line2D([n*self.h_spacing + self.left, (n + 1)*self.h_spacing + self.left],
-                                      [layer_top_a - m*self.v_spacing, layer_top_b - o*self.v_spacing], c='k')
+                                      [layer_top_a - m*self.v_spacing, layer_top_b - o*self.v_spacing], c='b', alpha=normalized_weights[n][m, o])
                     self.ax.add_artist(line)
                     xm = (n*self.h_spacing + self.left)
                     xo = ((n + 1)*self.h_spacing + self.left)
@@ -231,6 +240,9 @@ class Brain:
 if __name__ == "__main__":
     # Read layer weights and bias weights together
     from torch_vis import Read_Torch
-    torch_weights = Read_Torch("./Models/sample_2") 
+    import os
+    path = os.path.dirname(os.path.abspath(__file__))
+    path += "/Models/sample_2"
+    torch_weights = Read_Torch(path) 
     brain_MLP = Brain(torch_weights.weights_list,torch_weights.biases_list)
     brain_MLP.visualize()

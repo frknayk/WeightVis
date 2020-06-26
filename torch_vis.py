@@ -115,5 +115,8 @@ class Read_Torch:
     self.biases_list  = biases_list_transposed
 
 if __name__ == "__main__":
-  torch_weights = Read_Torch("./actormodel.pth")
+  import os
+  path = os.path.dirname(os.path.abspath(__file__))
+  path += "/Models/sample_2.pth"
+  torch_weights = Read_Torch(path)
   torch_weights.get_layer_shapes(calculate=True)
