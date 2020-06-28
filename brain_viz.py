@@ -43,7 +43,7 @@ class Brain:
         self.bottom         = 0.1
         self.top            = 0.9
 
-        self.offset_all     = [self.left,self.right,self.bottom,self.top]
+        self.offset_all     = [self.left, self.right, self.bottom, self.top]
         self.weights        = nn_weights
         self.bias_weights   = nn_bias_weights
 
@@ -133,6 +133,9 @@ class Brain:
             plt.arrow(arrow_posx,arrow_posy , 0.12, 0,  lw =1, head_width=0.01, head_length=0.02)
         
     def plot_nodes(self):
+        '''
+        Plot nodes, input(X1, X2,...) and output(y1, y2,...).
+        '''
         self.bcolors.print_ok("Plotting nodes ..")
         for n, layer_size in enumerate(self.layer_sizes):
             layer_top = self.v_spacing*(layer_size - 1)/2. + (self.top + self.bottom)/2.
@@ -151,9 +154,9 @@ class Brain:
     def plot_bias_nodes(self):
         self.bcolors.print_ok("Plotting bias nodes ..")
         # Bias-Nodes
-        for n, layer_size in enumerate(self.layer_sizes):
+        for n in range(len(self.layer_sizes)):
             if n < self.n_layers -1:
-                x_bias = (n+0.5)*self.h_spacing + self.left
+                x_bias = (n + 0.5) * self.h_spacing + self.left
                 y_bias = self.top + 0.005
                 circle = plt.Circle((x_bias, y_bias), self.v_spacing/8.,\
                                     color='w', ec='k', zorder=4)
@@ -204,9 +207,9 @@ class Brain:
     def plot_bias_edge_connections(self):
         self.bcolors.print_ok("Plotting bias-edge connections ..")
         # Edges between bias and nodes
-        for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
+        for n, (_, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             if n < self.n_layers-1:
-                layer_top_a = self.v_spacing*(layer_size_a - 1)/2. + (self.top + self.bottom)/2.
+                #layer_top_b: y of highest node of the next layer
                 layer_top_b = self.v_spacing*(layer_size_b - 1)/2. + (self.top + self.bottom)/2.
                 x_bias = (n+0.5)*self.h_spacing + self.left
                 y_bias = self.top + 0.005 
@@ -243,6 +246,7 @@ if __name__ == "__main__":
     import os
     path = os.path.dirname(os.path.abspath(__file__))
     path += "/Models/sample_2"
-    torch_weights = Read_Torch(path) 
-    brain_MLP = Brain(torch_weights.weights_list,torch_weights.biases_list)
+    torch_weights = Read_Torch(path)
+    brain_MLP = Brain(torch_weights.weights_list, torch_weights.biases_list)
+    #TODO Get loss and n_iter for visualize() function
     brain_MLP.visualize()
