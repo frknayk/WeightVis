@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from utils import Bcolors
+from math import fabs
+
 #TODO give credit to asian
 #TODO add verbosity levels for Bcolors 
 #TODO make docstring like numpy
@@ -219,22 +221,35 @@ class Brain:
         self.bcolors.print_ok("Plotting edge-node connections ..")
 
         #TODO Make normalization dynamic
-        np_weights = np.asarray(self.weights)
-        print(np_weights)
-        print(np_weights.shape)
+        # np_weights = np.asarray(self.weights)
         # Normalize to use for alpha(transparency)
         #normalized_weights = np_weights / np.linalg.norm(np_weights)
-        normalized_weights = (np_weights -  (-0.5093194)) / (0.494668 - (-0.5093194))
-        print(normalized_weights)
+        # normalized_weights = (np_weights -  (-0.5093194)) / (0.494668 - (-0.5093194))
 
         # Edges between nodes
         for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             layer_top_a = self.v_spacing*(layer_size_a - 1)/2. + (self.top + self.bottom)/2.
             layer_top_b = self.v_spacing*(layer_size_b - 1)/2. + (self.top + self.bottom)/2.
+            
+            # Normalize layer weights 
+            layer_weights = self.weights[n]
+            normalized_weights = layer_weights / np.linalg.norm(layer_weights)
+
             for m in range(layer_size_a):
                 for o in range(layer_size_b):
+                    
+                    # For positive values draw lines blue, for negative ones draw as red
+                    # TODO : move this block to a function
+                    alpha_val = None
+                    if normalized_weights[m, o] < 0:
+                        alpha_val = -normalized_weights[m, o]
+                        color = 'r'
+                    else:
+                        alpha_val = normalized_weights[m, o]
+                        color = 'b'
+
                     line = plt.Line2D([n*self.h_spacing + self.left, (n + 1)*self.h_spacing + self.left],
-                                      [layer_top_a - m*self.v_spacing, layer_top_b - o*self.v_spacing], c='b', alpha=normalized_weights[n][m, o])
+                                      [layer_top_a - m*self.v_spacing, layer_top_b - o*self.v_spacing], c=color, alpha=alpha_val)
                     self.ax.add_artist(line)
                     xm = (n*self.h_spacing + self.left)
                     xo = ((n + 1)*self.h_spacing + self.left)
