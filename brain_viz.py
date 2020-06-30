@@ -30,13 +30,25 @@ class Brain:
         - loss: (float) The current loss computed with the loss function.
     """
 
-    def __init__(self,nn_weights,nn_bias_weights):
+    def __init__(self, nn_weights, nn_bias_weights, fig_size_x=12, fig_size_y=12):
+        '''
+        Initialize brain.
+
+        Parameters
+        ----------
+        nn_weights : list
+            Weights of the model.
+
+        nn_bias_weights : list
+            Biases of the model.
+        '''
         self.layer_sizes    = None
         self.ax             = None
         
         # Figure sizes in percentage
-        self.fig_size_x     = 12
-        self.fig_size_y     = 12
+        #TODO When figure size increases, nodes become squished.
+        self.fig_size_x     = fig_size_x
+        self.fig_size_y     = fig_size_y
 
         self.left           = 0.1
         self.right          = 0.9
@@ -55,6 +67,17 @@ class Brain:
         self.bcolors = Bcolors()
 
     def visualize(self,loss_ = 999,n_iter_ = 1):
+        '''
+        Plot everything(nodes, edges, arrows, input, output)
+
+        Parameters
+        ----------
+        loss_ : int
+            Brain's latest loss value.
+
+        n_iter_: int
+            Number of iterations/epochs.
+        '''
         self.init_graph()
         self.set_figure()
         self.plot_input_arrows()
@@ -66,9 +89,12 @@ class Brain:
         plt.show()
 
     def init_graph(self):
+        '''
+        Creates the figure to plot the brain.
+        '''
         self.bcolors.print_header("Initiating visualization graphics")
         try :
-            fig = plt.figure(figsize=( self.fig_size_x,self.fig_size_y) )
+            fig = plt.figure(figsize=(self.fig_size_x, self.fig_size_y))
             # Get current axes (gca)
             self.ax  = fig.gca()
             self.ax.axis('off')
@@ -78,6 +104,14 @@ class Brain:
             print("Graph could not be set !\nPlease enter the figure sizes correctly") 
 
     def set_figure(self):
+        '''
+        Check if there is a problem with figure offset, layer sizes to continue procedure.
+
+        Returns
+        -------
+        is_figure_set : boolean
+            True if the figure's offset and layer sizes are ok.
+        '''
         is_figure_set = False
         is_offset_ok = self.is_fig_offsets_ok()
         is_layer_sizes_ok = self.set_layer_sizes()
@@ -95,6 +129,15 @@ class Brain:
         return is_figure_set
 
     def is_fig_offsets_ok(self):
+        #TODO Why? 
+        '''
+        Checks if figure's offsets are between (0-100).
+
+        Returns
+        -------
+        is_correct: boolean
+            True/False based on the condition.
+        '''
         is_correct = True
         for size in self.offset_all:
             if size > 100 or size < 0 :
@@ -103,6 +146,14 @@ class Brain:
         return is_correct
 
     def set_layer_sizes(self):
+        '''
+        Set layer sizes.
+
+        Returns
+        -------
+        True/False
+            If there are no layers, return False.
+        '''
         self.layer_sizes = []
         num_of_layers = len(self.weights)
 
@@ -169,7 +220,10 @@ class Brain:
 
         #TODO Make normalization dynamic
         np_weights = np.asarray(self.weights)
+        print(np_weights)
+        print(np_weights.shape)
         # Normalize to use for alpha(transparency)
+        #normalized_weights = np_weights / np.linalg.norm(np_weights)
         normalized_weights = (np_weights -  (-0.5093194)) / (0.494668 - (-0.5093194))
         print(normalized_weights)
 
@@ -247,6 +301,7 @@ if __name__ == "__main__":
     path = os.path.dirname(os.path.abspath(__file__))
     path += "/Models/sample_2"
     torch_weights = Read_Torch(path)
+    print(type(torch_weights.weights_list))
     brain_MLP = Brain(torch_weights.weights_list, torch_weights.biases_list)
     #TODO Get loss and n_iter for visualize() function
     brain_MLP.visualize()
