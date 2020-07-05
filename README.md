@@ -7,7 +7,8 @@ Visualize a trained neural network weights from different libraries
 ## TODO : 
 1. Clean Code (Refactor)
 2. Add debug levels (its not common to see all debug prints every time) 
-X. 3D visualisation
+
+- Long term TODO : 3D visualisation
 
 ## Contribution
 - We need to add some communication details here 
