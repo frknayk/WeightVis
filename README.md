@@ -5,9 +5,10 @@ Visualize a trained neural network weights from different libraries
 - pip3 install -e .
 
 ## TODO : 
-1. Clean Code (Refactor)
+1. Discover limits of library and plot partial in these limits
 2. Add debug levels (its not common to see all debug prints every time) 
 3. Make a base class for readers (Libraries/.)
+
 - Long term TODO : 3D visualisation
 
 ## Contribution
