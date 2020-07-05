@@ -28,8 +28,10 @@ class Read_SimplyNet:
             weigts_dict = layer_dict[key_list[0]]
             
             # Read weights and biases
-            W = weigts_dict['W']
-            b = weigts_dict['b']
+            W = weigts_dict['W'].T
+            b = weigts_dict['b'].T
+            # bias must be in the shape of (dim_bias,)
+            b = b.reshape(b.shape[1])
 
             self.weights_list.append(W)
             self.biases_list.append(b)
