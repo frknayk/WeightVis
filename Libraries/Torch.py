@@ -6,7 +6,7 @@ import torch as t
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable as V
-from utils import Bcolors
+from Utils.Bcolor import Bcolors
 
 class Read_Torch:
   def __init__(self,weight_path):

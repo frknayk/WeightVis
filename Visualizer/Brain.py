@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import Bcolors
+from Utils.Bcolor import Bcolors
 from math import fabs
 
 #TODO give credit to asian
@@ -308,15 +308,3 @@ class Brain:
         # Record the n_iter_ and loss
         plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
                  'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
-
-if __name__ == "__main__":
-    # Read layer weights and bias weights together
-    from torch_vis import Read_Torch
-    import os
-    path = os.path.dirname(os.path.abspath(__file__))
-    path += "/Models/sample_2"
-    torch_weights = Read_Torch(path)
-    print(type(torch_weights.weights_list))
-    brain_MLP = Brain(torch_weights.weights_list, torch_weights.biases_list)
-    #TODO Get loss and n_iter for visualize() function
-    brain_MLP.visualize()
