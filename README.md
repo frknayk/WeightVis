@@ -1,7 +1,7 @@
 # Brain_Visualizer
 Visualize a trained neural network weights from different libraries
 
-## Intallation 
+## Installation 
 - pip3 install -e .
 
 ## TODO : 
