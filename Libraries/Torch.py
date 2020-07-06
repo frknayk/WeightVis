@@ -11,7 +11,8 @@ from Utils.Bcolor import Bcolors
 class Read_Torch:
   def __init__(self,weight_path):
     self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    self.brain_path = weight_path
+    #self.brain_path = weight_path
+    self.brain_path = r"C:\Users\Abdullah\Desktop\Projects\Brain_Visualizer\Models\sample_4"
     
     self.weights_all = None
     self.weight_names  = []
@@ -117,6 +118,6 @@ class Read_Torch:
 if __name__ == "__main__":
   import os
   path = os.path.dirname(os.path.abspath(__file__))
-  path += "/Models/sample_2.pth"
+  path += "/Models/sample_4.pth"
   torch_weights = Read_Torch(path)
   torch_weights.get_layer_shapes(calculate=True)

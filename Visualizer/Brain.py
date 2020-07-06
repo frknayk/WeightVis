@@ -32,7 +32,7 @@ class Brain:
         - loss: (float) The current loss computed with the loss function.
     """
 
-    def __init__(self, nn_weights, nn_bias_weights, fig_size_x=12, fig_size_y=12):
+    def __init__(self, nn_weights, nn_bias_weights, show_weights=False, fig_size_x=12, fig_size_y=12):
         '''
         Initialize brain.
 
@@ -65,6 +65,7 @@ class Brain:
         self.v_spacing      = None
         self.h_spacing      = None
 
+        self.show_weights   = show_weights
         # Beautiful printing
         self.bcolors = Bcolors()
 
@@ -123,7 +124,7 @@ class Brain:
             self.bcolors.print_inform("Visualization graphics are set !")
             self.n_layers  = len(self.layer_sizes)
             self.v_spacing = (self.top - self.bottom)/float(max(self.layer_sizes))
-            self.h_spacing = (self.right - self.left)/float(max(self.layer_sizes) - 1)
+            self.h_spacing = (self.right - self.left)/float(self.n_layers)
             # print("vertical     unit spacing : ",self.v_spacing)
             # print("horizontal   unit spacing : ",self.h_spacing)
 
@@ -268,10 +269,11 @@ class Brain:
                             ym1 = ym + (self.v_spacing/8.+0.12)*np.sin(rot_mo_rad)
                         else:
                             ym1 = ym + (self.v_spacing/8.+0.04)*np.sin(rot_mo_rad)
-                    plt.text( xm1, ym1,\
-                             str(round(self.weights[n][m, o],4)),\
-                             rotation = rot_mo_deg, \
-                             fontsize = 10)
+                    if self.show_weights:   
+                        plt.text( xm1, ym1,\
+                                str(round(self.weights[n][m, o],4)),\
+                                rotation = rot_mo_deg, \
+                                fontsize = 10)
                              
     def plot_bias_edge_connections(self):
         self.bcolors.print_ok("Plotting bias-edge connections ..")
@@ -294,10 +296,11 @@ class Brain:
                 yo2 = yo - (self.v_spacing/8.+0.01)*np.sin(rot_bo_rad)
                 xo1 = xo2 -0.05 *np.cos(rot_bo_rad)
                 yo1 = yo2 -0.05 *np.sin(rot_bo_rad)
-                plt.text( xo1, yo1,\
-                     str(round(self.bias_weights[n][o],4)),\
-                     rotation = rot_bo_deg, \
-                     fontsize = 10)   
+                if self.show_weights:
+                    plt.text( xo1, yo1,\
+                        str(round(self.bias_weights[n][o],4)),\
+                        rotation = rot_bo_deg, \
+                        fontsize = 10)   
 
     def plot_output_arrows(self,loss,n_iter):
         self.bcolors.print_ok("Plotting output arrows ..")

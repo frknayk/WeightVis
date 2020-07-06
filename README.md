@@ -10,6 +10,7 @@ Visualize a trained neural network weights from different libraries
 3. Make a base class for readers (Libraries/.)
 4. Data passing through functions must be dynamical (give data in every step instead of giving in the beginning)
 - Long term TODO : 3D visualisation
+5. Change colors of the edges from biases
 
 ## Contribution
 - We need to add some communication details here 
