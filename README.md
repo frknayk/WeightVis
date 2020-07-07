@@ -1,4 +1,4 @@
-# Brain_Visualizer
+# Neural Network Visualizer
 Visualize a trained neural network weights from different libraries
 
 ## Intallation 
