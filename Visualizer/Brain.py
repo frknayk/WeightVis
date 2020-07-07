@@ -221,12 +221,6 @@ class Brain:
     def plot_edge_node_connections(self):
         self.bcolors.print_ok("Plotting edge-node connections ..")
 
-        #TODO Make normalization dynamic
-        # np_weights = np.asarray(self.weights)
-        # Normalize to use for alpha(transparency)
-        #normalized_weights = np_weights / np.linalg.norm(np_weights)
-        # normalized_weights = (np_weights -  (-0.5093194)) / (0.494668 - (-0.5093194))
-
         # Edges between nodes
         for n, (layer_size_a, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
             layer_top_a = self.v_spacing*(layer_size_a - 1)/2. + (self.top + self.bottom)/2.
@@ -234,20 +228,12 @@ class Brain:
             
             # Normalize layer weights 
             layer_weights = self.weights[n]
-            normalized_weights = layer_weights / np.linalg.norm(layer_weights)
+            normalized_weights = self.normalize_weights(layer_weights)
 
             for m in range(layer_size_a):
                 for o in range(layer_size_b):
                     
-                    # For positive values draw lines blue, for negative ones draw as red
-                    # TODO : move this block to a function
-                    alpha_val = None
-                    if normalized_weights[m, o] < 0:
-                        alpha_val = -normalized_weights[m, o]
-                        color = 'r'
-                    else:
-                        alpha_val = normalized_weights[m, o]
-                        color = 'b'
+                    alpha_val, color = self.get_alpha_and_color(normalized_weights[m, o])
 
                     line = plt.Line2D([n*self.h_spacing + self.left, (n + 1)*self.h_spacing + self.left],
                                       [layer_top_a - m*self.v_spacing, layer_top_b - o*self.v_spacing], c=color, alpha=alpha_val)
@@ -279,14 +265,20 @@ class Brain:
         self.bcolors.print_ok("Plotting bias-edge connections ..")
         # Edges between bias and nodes
         for n, (_, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
+            # Normalize layer weights 
+            bias_weights = self.bias_weights[n]
+            normalized_weights = self.normalize_weights(bias_weights)
+
             if n < self.n_layers-1:
                 #layer_top_b: y of highest node of the next layer
                 layer_top_b = self.v_spacing*(layer_size_b - 1)/2. + (self.top + self.bottom)/2.
                 x_bias = (n+0.5)*self.h_spacing + self.left
                 y_bias = self.top + 0.005 
             for o in range(layer_size_b):
+                alpha_val, color = self.get_alpha_and_color(normalized_weights[o])
+
                 line = plt.Line2D([x_bias, (n + 1)*self.h_spacing + self.left],
-                              [y_bias, layer_top_b - o*self.v_spacing], c='k')
+                              [y_bias, layer_top_b - o*self.v_spacing], c=color, alpha=alpha_val)
                 self.ax.add_artist(line)
                 xo = ((n + 1)*self.h_spacing + self.left)
                 yo = (layer_top_b - o*self.v_spacing)
@@ -311,3 +303,17 @@ class Brain:
         # Record the n_iter_ and loss
         plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
                  'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
+
+    def normalize_weights(self, weights):
+        return weights / np.linalg.norm(weights)
+
+    def get_alpha_and_color(self, normalized_weights):
+        # For positive values draw lines blue, for negative ones draw as red
+        if normalized_weights < 0:
+            alpha_val = -normalized_weights
+            color = 'r'
+        else:
+            alpha_val = normalized_weights
+            color = 'b'
+
+        return alpha_val, color
