@@ -100,7 +100,7 @@ class Brain:
         '''
         Creates the figure to plot the brain.
         '''
-        if self.debug_level >= verbos.MEDIUM:
+        if self.debug_level.value >= verbos.MEDIUM.value:
             self.bcolors.print_header("Initiating visualization graphics")
         try :
             fig = plt.figure(figsize=(self.fig_size_x, self.fig_size_y))
@@ -124,16 +124,14 @@ class Brain:
         is_figure_set = False
         is_offset_ok = self.is_fig_offsets_ok()
         is_layer_sizes_ok = self.set_layer_sizes()
-        if self.debug_level >= verbos.LOW:
+        if self.debug_level.value >= verbos.LOW.value:
             print("Layer Sizes : ",self.layer_sizes)
         if is_offset_ok and is_layer_sizes_ok:
-            if self.debug_level >= verbos.MEDIUM:
+            if self.debug_level.value >= verbos.MEDIUM.value:
                 self.bcolors.print_inform("Visualization graphics are set !")
             self.n_layers  = len(self.layer_sizes)
             self.v_spacing = (self.top - self.bottom)/float(max(self.layer_sizes))
             self.h_spacing = (self.right - self.left)/float(self.n_layers)
-            # print("vertical     unit spacing : ",self.v_spacing)
-            # print("horizontal   unit spacing : ",self.h_spacing)
 
             is_figure_set = True
         return is_figure_set
@@ -185,7 +183,7 @@ class Brain:
             return False
 
     def plot_input_arrows(self):
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting input arrows ..")  
         self.layer_top_0 = self.v_spacing*(self.layer_sizes[0] - 1)/2. + (self.top + self.bottom)/2.
         for m in range(self.layer_sizes[0]):
@@ -198,7 +196,7 @@ class Brain:
         '''
         Plot nodes, input(X1, X2,...) and output(y1, y2,...).
         '''
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting nodes ..")
         for n, layer_size in enumerate(self.layer_sizes):
             layer_top = self.v_spacing*(layer_size - 1)/2. + (self.top + self.bottom)/2.
@@ -215,7 +213,7 @@ class Brain:
                 self.ax.add_artist(circle) 
     
     def plot_bias_nodes(self):
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting bias nodes ..")
         # Bias-Nodes
         for n in range(len(self.layer_sizes)):
@@ -229,7 +227,7 @@ class Brain:
                 self.ax.add_artist(circle)   
 
     def plot_edge_node_connections(self):
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting edge-node connections ..")
 
         # Edges between nodes
@@ -273,7 +271,7 @@ class Brain:
                                 fontsize = 10)
                              
     def plot_bias_edge_connections(self):
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting bias-edge connections ..")
         # Edges between bias and nodes
         for n, (_, layer_size_b) in enumerate(zip(self.layer_sizes[:-1], self.layer_sizes[1:])):
@@ -307,7 +305,7 @@ class Brain:
                         fontsize = 10)   
 
     def plot_output_arrows(self,loss,n_iter):
-        if self.debug_level >= verbos.MEDIUM :
+        if self.debug_level.value >= verbos.MEDIUM.value :
             self.bcolors.print_ok("Plotting output arrows ..")
         # Output-Arrows
         layer_top_0 = self.v_spacing*(self.layer_sizes[-1] - 1)/2. + (self.top + self.bottom)/2.
