@@ -3,7 +3,7 @@ from Visualizer.Brain import Brain
 
 
 # Read SimplyNet weights
-simple_weights = Read_SimplyNet("/home/furkan/Furkan/Codes/Brain_Visualizer/Models/random_weight")
+simple_weights = Read_SimplyNet("Models/random_weight_2_4_4_1")
 
 
 # Initate visualizer

@@ -11,8 +11,7 @@ from Utils.Bcolor import Bcolors
 class Read_Torch:
   def __init__(self,weight_path):
     self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    #self.brain_path = weight_path
-    self.brain_path = r"C:\Users\Abdullah\Desktop\Projects\Brain_Visualizer\Models\sample_4"
+    self.brain_path = weight_path
     
     self.weights_all = None
     self.weight_names  = []
