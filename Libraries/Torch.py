@@ -7,12 +7,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable as V
 from Utils.Bcolor import Bcolors
+from Utils.Debug_Levels import Debug_Levels as verbos
 
 class Read_Torch:
-  def __init__(self,weight_path):
+  def __init__(self,weight_path,debug_level = verbos.NO):
     self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     self.brain_path = weight_path
-    
+    self.verbos_level = debug_level
     self.weights_all = None
     self.weight_names  = []
     self.bias_names    = []
@@ -32,24 +33,30 @@ class Read_Torch:
     self.weights_shape    = [layer.shape for layer in self.weights_list]
     self.biases_shape     = [layer.shape for layer in self.biases_list]
 
-  def load_weight(self):
     self.bcolors = Bcolors()
-    print("\n*******************************")
-    print("*******************************")
-    self.bcolors.print_header("STARTED TO READ TORCH NETWORK !")
-    print("*******************************")
-    print("*******************************\n")
+
+
+  def load_weight(self):
+    if self.verbos_level > verbos.MEDIUM:
+      print("\n*******************************")
+      print("*******************************")
+      self.bcolors.print_header("STARTED TO READ TORCH NETWORK !")
+      print("*******************************")
+      print("*******************************\n")
     try:
       self.weights_all = torch.load(self.brain_path)
-      print("################################")
-      self.bcolors.print_ok("Neural network weights are loaded succesfully !")
-      print("################################\n")
-      
-      print("################################")
-      self.bcolors.print_inform("Now trying to detect node weights vs bias weights")
-      print("################################\n")
+            
+      if self.verbos_level > verbos.MEDIUM:
+        print("################################")
+        self.bcolors.print_ok("Neural network weights are loaded succesfully !")
+        print("################################\n")
+
+        print("################################")
+        self.bcolors.print_inform("Now trying to detect node weights vs bias weights")
+        print("################################\n")
     except:
-      self.bcolors.print_error("Neural network weights could not be loaded. Please check the path !")
+      if self.verbos_level > verbos.LOW:
+        self.bcolors.print_error("Neural network weights could not be loaded. Please check the path !")
 
   def get_weights(self):
     Brain = self.weights_all
@@ -77,15 +84,17 @@ class Read_Torch:
     return torch_tensor.cpu().numpy()
 
   def print_layer_info(self):
-    self.bcolors.print_ok("Node weights and Bias weights are seperated successfully !")
-    # self.bcolors.print_bold("What's inside of my neural network ? ----->")
-    self.bcolors.print_bold("NODE WEIGHTS")
-    for node_weight_name in self.weight_names:
-      self.bcolors.print_underline(node_weight_name)
-    self.bcolors.print_bold("BIAS WEIGHTS")
-    for bias_weight_name in self.bias_names:
-      self.bcolors.print_underline(bias_weight_name)
-    print("\n************************")
+    if self.verbos_level > verbos.MEDIUM:
+      self.bcolors.print_ok("Node weights and Bias weights are seperated successfully !")
+      self.bcolors.print_bold("NODE WEIGHTS")
+
+      for node_weight_name in self.weight_names:
+        self.bcolors.print_underline(node_weight_name)
+
+      self.bcolors.print_bold("BIAS WEIGHTS")
+      for bias_weight_name in self.bias_names:
+        self.bcolors.print_underline(bias_weight_name)
+      print("\n************************")
 
   def get_layer_shapes(self,calculate=False):
     if self.weights_shape is None:
@@ -95,11 +104,12 @@ class Read_Torch:
     if(self.weights_shape is not None) and (self.biases_shape is not None) and (calculate):
       self.weights_shape    = [layer_weights.shape for layer_weights in self.weights_list]
       self.biases_shape     = [layer_biases.shape  for layer_biases  in self.biases_list]
-    
-    self.bcolors.print_inform("... Node Weights Layer Shapes ...")
-    print(self.weights_shape)
-    self.bcolors.print_inform("... Bias Weights Layer Shapes ...")
-    print(self.biases_shape)
+
+    if self.verbos_level > verbos.MEDIUM:
+      self.bcolors.print_inform("... Node Weights Layer Shapes ...")
+      print(self.weights_shape)
+      self.bcolors.print_inform("... Bias Weights Layer Shapes ...")
+      print(self.biases_shape)
 
   def transpose_layers(self):
     weights_list_transposed  = []
@@ -113,10 +123,3 @@ class Read_Torch:
     
     self.weights_list = weights_list_transposed
     self.biases_list  = biases_list_transposed
-
-if __name__ == "__main__":
-  import os
-  path = os.path.dirname(os.path.abspath(__file__))
-  path += "/Models/sample_4.pth"
-  torch_weights = Read_Torch(path)
-  torch_weights.get_layer_shapes(calculate=True)
