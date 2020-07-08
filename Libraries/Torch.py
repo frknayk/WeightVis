@@ -37,7 +37,7 @@ class Read_Torch:
 
 
   def load_weight(self):
-    if self.verbos_level > verbos.MEDIUM:
+    if self.verbos_level.value > verbos.MEDIUM.value:
       print("\n*******************************")
       print("*******************************")
       self.bcolors.print_header("STARTED TO READ TORCH NETWORK !")
@@ -46,7 +46,7 @@ class Read_Torch:
     try:
       self.weights_all = torch.load(self.brain_path)
             
-      if self.verbos_level > verbos.MEDIUM:
+      if self.verbos_level.value > verbos.MEDIUM.value:
         print("################################")
         self.bcolors.print_ok("Neural network weights are loaded succesfully !")
         print("################################\n")
@@ -55,7 +55,7 @@ class Read_Torch:
         self.bcolors.print_inform("Now trying to detect node weights vs bias weights")
         print("################################\n")
     except:
-      if self.verbos_level > verbos.LOW:
+      if self.verbos_level.value > verbos.LOW.value:
         self.bcolors.print_error("Neural network weights could not be loaded. Please check the path !")
 
   def get_weights(self):
@@ -84,7 +84,7 @@ class Read_Torch:
     return torch_tensor.cpu().numpy()
 
   def print_layer_info(self):
-    if self.verbos_level > verbos.MEDIUM:
+    if self.verbos_level.value > verbos.MEDIUM.value:
       self.bcolors.print_ok("Node weights and Bias weights are seperated successfully !")
       self.bcolors.print_bold("NODE WEIGHTS")
 
@@ -105,7 +105,7 @@ class Read_Torch:
       self.weights_shape    = [layer_weights.shape for layer_weights in self.weights_list]
       self.biases_shape     = [layer_biases.shape  for layer_biases  in self.biases_list]
 
-    if self.verbos_level > verbos.MEDIUM:
+    if self.verbos_level.value > verbos.MEDIUM.value:
       self.bcolors.print_inform("... Node Weights Layer Shapes ...")
       print(self.weights_shape)
       self.bcolors.print_inform("... Bias Weights Layer Shapes ...")
