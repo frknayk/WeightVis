@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from Utils.Bcolor import Bcolors
 from math import fabs
 from Utils.Debug_Levels import Debug_Levels as verbos
+import time
 
 #TODO give credit to asian
 #TODO add verbosity levels for Bcolors 
@@ -34,7 +35,8 @@ class Brain:
         - debug_level (Debug_Levels): Check levels on Debug_Levels.py
     """
 
-    def __init__(self, nn_weights, nn_bias_weights, show_weights=False, fig_size_x=12, fig_size_y=12, debug_level = verbos.NO):
+    def __init__(self, nn_weights, nn_bias_weights, show_weights=False, show_arrows=False,fig_size_x=12, 
+                show_text=False,fig_size_y=12, debug_level = verbos.NO):
         '''
         Initialize brain.
 
@@ -51,6 +53,7 @@ class Brain:
         
         # Figure sizes in percentage
         #TODO When figure size increases, nodes become squished.
+        self.fig            = None
         self.fig_size_x     = fig_size_x
         self.fig_size_y     = fig_size_y
 
@@ -68,13 +71,17 @@ class Brain:
         self.h_spacing      = None
 
         self.show_weights   = show_weights
+        self.show_arrows    = show_arrows
+        self.show_texts     = show_text
 
         # Beautiful printing
         self.bcolors = Bcolors()
 
         self.debug_level = debug_level
+        
+        self.init_graph()
 
-    def visualize(self,loss_ = 999,n_iter_ = 1):
+    def visualize(self,loss_ = 999,n_iter_ = 1,interval=1):
         '''
         Plot everything(nodes, edges, arrows, input, output)
 
@@ -86,7 +93,8 @@ class Brain:
         n_iter_: int
             Number of iterations/epochs.
         '''
-        self.init_graph()
+        self.ax  = self.fig.gca()
+        self.ax.axis('off')
         self.set_figure()
         self.plot_input_arrows()
         self.plot_nodes()
@@ -94,7 +102,10 @@ class Brain:
         self.plot_edge_node_connections()
         self.plot_bias_edge_connections()
         self.plot_output_arrows(loss_,n_iter_)
-        plt.show()
+        # plt.show()
+        plt.pause(interval)
+        plt.draw()
+        
 
     def init_graph(self):
         '''
@@ -103,12 +114,14 @@ class Brain:
         if self.debug_level.value >= verbos.MEDIUM.value:
             self.bcolors.print_header("Initiating visualization graphics")
         try :
-            fig = plt.figure(figsize=(self.fig_size_x, self.fig_size_y))
+            plt.ion()
+            self.fig = plt.figure(figsize=(self.fig_size_x, self.fig_size_y))
             # Get current axes (gca)
-            self.ax  = fig.gca()
+            self.ax  = self.fig.gca()
             self.ax.axis('off')
             #TODO This gives error: "TypeError: 'AxesSubplot' object is not callable", fig.gca() returns AxesSubplot object
             # self.ax(autoscale=False)
+            
         except:
             print("Graph could not be set !\nPlease enter the figure sizes correctly") 
 
@@ -183,14 +196,15 @@ class Brain:
             return False
 
     def plot_input_arrows(self):
-        if self.debug_level.value >= verbos.MEDIUM.value :
-            self.bcolors.print_ok("Plotting input arrows ..")  
-        self.layer_top_0 = self.v_spacing*(self.layer_sizes[0] - 1)/2. + (self.top + self.bottom)/2.
-        for m in range(self.layer_sizes[0]):
-            arrow_posx = self.left-0.18
-            arrow_posy = self.layer_top_0 - m*self.v_spacing
-            # print(arrow_posx,arrow_posy)
-            plt.arrow(arrow_posx,arrow_posy , 0.12, 0,  lw =1, head_width=0.01, head_length=0.02)
+        if self.show_arrows:
+            if self.debug_level.value >= verbos.MEDIUM.value :
+                self.bcolors.print_ok("Plotting input arrows ..")  
+            self.layer_top_0 = self.v_spacing*(self.layer_sizes[0] - 1)/2. + (self.top + self.bottom)/2.
+            for m in range(self.layer_sizes[0]):
+                arrow_posx = self.left-0.18
+                arrow_posy = self.layer_top_0 - m*self.v_spacing
+                # print(arrow_posx,arrow_posy)
+                plt.arrow(arrow_posx,arrow_posy , 0.12, 0,  lw =1, head_width=0.01, head_length=0.02)
         
     def plot_nodes(self):
         '''
@@ -203,13 +217,16 @@ class Brain:
             for m in range(layer_size):
                 circle = plt.Circle((n*self.h_spacing + self.left, layer_top - m*self.v_spacing), self.v_spacing/8.,\
                                 color='w', ec='k', zorder=4)
-                # Add texts
-                if n == 0:
-                    plt.text(self.left-0.125, layer_top - m*self.v_spacing, r'$X_{'+str(m+1)+'}$', fontsize=15)
-                elif (self.n_layers == 3) & (n == 1):
-                    plt.text(n*self.h_spacing + self.left+0.00, layer_top - m*self.v_spacing+ (self.v_spacing/8.+0.01*self.v_spacing), r'$H_{'+str(m+1)+'}$', fontsize=15)
-                elif n == self.n_layers -1:
-                    plt.text(n*self.h_spacing + self.left+0.10, layer_top - m*self.v_spacing, r'$y_{'+str(m+1)+'}$', fontsize=15)
+                
+                if self.show_texts:
+                    # Add texts
+                    if n == 0:
+                        plt.text(self.left-0.125, layer_top - m*self.v_spacing, r'$X_{'+str(m+1)+'}$', fontsize=15)
+                    elif (self.n_layers == 3) & (n == 1):
+                        plt.text(n*self.h_spacing + self.left+0.00, layer_top - m*self.v_spacing+ (self.v_spacing/8.+0.01*self.v_spacing), r'$H_{'+str(m+1)+'}$', fontsize=15)
+                    elif n == self.n_layers -1:
+                        plt.text(n*self.h_spacing + self.left+0.10, layer_top - m*self.v_spacing, r'$y_{'+str(m+1)+'}$', fontsize=15)
+                
                 self.ax.add_artist(circle) 
     
     def plot_bias_nodes(self):
@@ -222,8 +239,10 @@ class Brain:
                 y_bias = self.top + 0.005
                 circle = plt.Circle((x_bias, y_bias), self.v_spacing/8.,\
                                     color='w', ec='k', zorder=4)
-                # Add texts
-                plt.text(x_bias-(self.v_spacing/8.+0.10*self.v_spacing+0.01), y_bias, r'$1$', fontsize=15)
+                if self.show_texts:
+                    # Add texts
+                    plt.text(x_bias-(self.v_spacing/8.+0.10*self.v_spacing+0.01), y_bias, r'$1$', fontsize=15)
+
                 self.ax.add_artist(circle)   
 
     def plot_edge_node_connections(self):
@@ -264,7 +283,8 @@ class Brain:
                             ym1 = ym + (self.v_spacing/8.+0.12)*np.sin(rot_mo_rad)
                         else:
                             ym1 = ym + (self.v_spacing/8.+0.04)*np.sin(rot_mo_rad)
-                    if self.show_weights:   
+
+                    if self.show_texts:
                         plt.text( xm1, ym1,\
                                 str(round(self.weights[n][m, o],4)),\
                                 rotation = rot_mo_deg, \
@@ -298,22 +318,25 @@ class Brain:
                 yo2 = yo - (self.v_spacing/8.+0.01)*np.sin(rot_bo_rad)
                 xo1 = xo2 -0.05 *np.cos(rot_bo_rad)
                 yo1 = yo2 -0.05 *np.sin(rot_bo_rad)
-                if self.show_weights:
+                if self.show_texts:
                     plt.text( xo1, yo1,\
                         str(round(self.bias_weights[n][o],4)),\
                         rotation = rot_bo_deg, \
                         fontsize = 10)   
 
     def plot_output_arrows(self,loss,n_iter):
-        if self.debug_level.value >= verbos.MEDIUM.value :
-            self.bcolors.print_ok("Plotting output arrows ..")
-        # Output-Arrows
-        layer_top_0 = self.v_spacing*(self.layer_sizes[-1] - 1)/2. + (self.top + self.bottom)/2.
-        for m in range(self.layer_sizes[-1]):
-            plt.arrow(self.right+0.015, layer_top_0 - m*self.v_spacing, 0.16*self.h_spacing, 0,  lw =1, head_width=0.01, head_length=0.02)
-        # Record the n_iter_ and loss
-        plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
-                 'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
+        if self.show_arrows:
+            if self.debug_level.value >= verbos.MEDIUM.value :
+                self.bcolors.print_ok("Plotting output arrows ..")
+            # Output-Arrows
+            layer_top_0 = self.v_spacing*(self.layer_sizes[-1] - 1)/2. + (self.top + self.bottom)/2.
+            for m in range(self.layer_sizes[-1]):
+                plt.arrow(self.right+0.015, layer_top_0 - m*self.v_spacing, 0.16*self.h_spacing, 0,  lw =1, head_width=0.01, head_length=0.02)
+
+            if self.show_texts:
+                # Record the n_iter_ and loss
+                plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
+                         'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
 
     def normalize_weights(self, weights):
         return weights / np.linalg.norm(weights)

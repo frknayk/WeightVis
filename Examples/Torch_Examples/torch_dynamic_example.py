@@ -13,7 +13,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 input_size = 32
 hidden_size = 32
 num_classes = 1
-num_epochs = 5
+num_epochs = 500
 learning_rate = 0.001
 
 
@@ -42,22 +42,20 @@ Y_train = torch.randn(100,1).to(device)
 
 # Read weights
 torch_weights = Read_Torch(trained_weights=model.state_dict())
+
 # Initate visualizer
 brain = Brain(torch_weights.weights_list, torch_weights.biases_list)
 
 # Train the model
 for epoch in range(num_epochs):
-        # Forward pass
-        outputs = model(X_train)
-        loss = criterion(outputs, Y_train)
-        
-        # Backward and optimize
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        # Plot Brain
-        brain.visualize()
-
-# # Save the model checkpoint
-# torch.save(model.state_dict(), 'model.ckpt')
+    print("epoch : ",epoch)
+    # Forward pass
+    outputs = model(X_train)
+    loss = criterion(outputs, Y_train)
+    
+    # Backward and optimize
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    # Plot Brain
+    brain.visualize(interval=1)
