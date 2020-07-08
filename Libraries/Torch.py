@@ -10,9 +10,10 @@ from Utils.Bcolor import Bcolors
 from Utils.Debug_Levels import Debug_Levels as verbos
 
 class Read_Torch:
-  def __init__(self,weight_path,debug_level = verbos.NO):
+  def __init__(self,weight_path=None,trained_weights=None,debug_level = verbos.NO):
     self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     self.brain_path = weight_path
+    self.trained_weights = trained_weights  
     self.verbos_level = debug_level
     self.weights_all = None
     self.weight_names  = []
@@ -21,6 +22,7 @@ class Read_Torch:
     self.weights_shape = None
     self.biases        = []
     self.biases_shape = None
+    self.bcolors = Bcolors()
     # Brain Vis wants all weights in this format
     self.weights_list  = []
     self.biases_list   = []
@@ -33,30 +35,18 @@ class Read_Torch:
     self.weights_shape    = [layer.shape for layer in self.weights_list]
     self.biases_shape     = [layer.shape for layer in self.biases_list]
 
-    self.bcolors = Bcolors()
-
 
   def load_weight(self):
-    if self.verbos_level.value > verbos.MEDIUM.value:
-      print("\n*******************************")
-      print("*******************************")
-      self.bcolors.print_header("STARTED TO READ TORCH NETWORK !")
-      print("*******************************")
-      print("*******************************\n")
-    try:
-      self.weights_all = torch.load(self.brain_path)
-            
-      if self.verbos_level.value > verbos.MEDIUM.value:
-        print("################################")
-        self.bcolors.print_ok("Neural network weights are loaded succesfully !")
-        print("################################\n")
-
-        print("################################")
-        self.bcolors.print_inform("Now trying to detect node weights vs bias weights")
-        print("################################\n")
-    except:
-      if self.verbos_level.value > verbos.LOW.value:
+    if self.brain_path is not None:
+      try:
+        self.weights_all = torch.load(self.brain_path)
+      except:
         self.bcolors.print_error("Neural network weights could not be loaded. Please check the path !")
+    else:
+      try:
+        self.weights_all = self.trained_weights
+      except:
+        self.bcolors.print_error("Trained weights could not be read !")
 
   def get_weights(self):
     Brain = self.weights_all

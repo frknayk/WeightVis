@@ -3,7 +3,7 @@ from Visualizer.Brain import Brain
 
 
 # Read SimplyNet weights
-simple_weights = Read_SimplyNet("Models/fcnn_weight_3_2526")
+simple_weights = Read_SimplyNet("Models/random_weight_2_4_4_1")
 
 
 # Initate visualizer
