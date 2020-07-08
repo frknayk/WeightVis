@@ -81,7 +81,7 @@ class Brain:
         
         self.init_graph()
 
-    def visualize(self,loss_ = 999,n_iter_ = 1,interval=1):
+    def visualize(self,torch_weights,loss_ = 999,n_iter_ = 1,interval=1):
         '''
         Plot everything(nodes, edges, arrows, input, output)
 
@@ -93,7 +93,11 @@ class Brain:
         n_iter_: int
             Number of iterations/epochs.
         '''
-        self.ax  = self.fig.gca()
+        self.weights        = torch_weights.weights_list
+        self.bias_weights   = torch_weights.biases_list
+        # self.ax  = self.fig.gca()
+        self.ax.cla()
+        self.ax.set_title("Loss : {0:.3} / Iteration : {1}".format(loss_,n_iter_))
         self.ax.axis('off')
         self.set_figure()
         self.plot_input_arrows()
@@ -333,10 +337,9 @@ class Brain:
             for m in range(self.layer_sizes[-1]):
                 plt.arrow(self.right+0.015, layer_top_0 - m*self.v_spacing, 0.16*self.h_spacing, 0,  lw =1, head_width=0.01, head_length=0.02)
 
-            if self.show_texts:
-                # Record the n_iter_ and loss
-                plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
-                         'Steps:'+str(n_iter)+'    Loss: ' + str(round(loss, 6)), fontsize = 15)
+        # # Record the n_iter_ and loss
+        # plt.text(self.left + (self.right-self.left)/3., self.bottom - 0.005*self.v_spacing, \
+        #          'Steps:'+str(n_iter)+'    Loss: {0:.2f}'.format(loss), fontsize = 15)
 
     def normalize_weights(self, weights):
         return weights / np.linalg.norm(weights)

@@ -57,5 +57,9 @@ for epoch in range(num_epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    # Plot Brain
-    brain.visualize(interval=1)
+
+    if epoch % 10 == 0:
+        # Read weights
+        torch_weights = Read_Torch(trained_weights=model.state_dict())
+        # Plot Brain
+        brain.visualize(torch_weights,loss_=loss,n_iter_=epoch,interval=1)
