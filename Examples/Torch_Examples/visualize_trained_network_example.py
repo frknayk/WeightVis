@@ -7,4 +7,3 @@ brain = Brain(nn_lib=Libs.Torch)
 
 # Visualize neural network
 brain.visualize("Models/sample_5",load_from_path=True)
-
