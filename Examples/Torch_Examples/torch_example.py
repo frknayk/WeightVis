@@ -1,11 +1,10 @@
-from Libraries.Torch import Read_Torch
 from Visualizer.Brain import Brain
-
-# Read weights
-torch_weights = Read_Torch("Models/sample_4")
+from Libraries.Enums import NNLibs as Libs
+import time
 
 # Initate visualizer
-brain = Brain(torch_weights.weights_list, torch_weights.biases_list)
+brain = Brain(nn_lib=Libs.Torch)
 
 # Visualize neural network
-brain.visualize()
+brain.visualize("Models/sample_5",load_from_path=True)
+

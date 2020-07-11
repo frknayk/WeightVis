@@ -3,8 +3,9 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 
-from Libraries.Torch import Read_Torch
+
 from Visualizer.Brain import Brain
+from Libraries.Enums import NNLibs as Libs
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -23,12 +24,17 @@ class NeuralNet(nn.Module):
         super(NeuralNet, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size) 
         self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, num_classes)  
-    
+        self.fc2 = nn.Linear(hidden_size, hidden_size)  
+        self.sigmoid = nn.Sigmoid()
+        self.fc3 = nn.Linear(hidden_size, num_classes)  
+
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
         out = self.fc2(out)
+        out = self.sigmoid(out)
+        out = self.fc3(out)
+
         return out
 
 model = NeuralNet(input_size, hidden_size, num_classes).to(device)
@@ -40,11 +46,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 X_train = torch.randn(100,32).to(device)
 Y_train = torch.randn(100,1).to(device)
 
-# Read weights
-torch_weights = Read_Torch(trained_weights=model.state_dict())
-
 # Initate visualizer
-brain = Brain(torch_weights.weights_list, torch_weights.biases_list)
+brain = Brain(nn_lib=Libs.Torch)
 
 # Train the model
 for epoch in range(num_epochs):
@@ -59,7 +62,5 @@ for epoch in range(num_epochs):
     optimizer.step()
 
     if epoch % 10 == 0:
-        # Read weights
-        torch_weights = Read_Torch(trained_weights=model.state_dict())
         # Plot Brain
-        brain.visualize(torch_weights,loss_=loss,n_iter_=epoch,interval=1)
+        brain.visualize(model.state_dict(),loss_=loss,n_iter_=epoch,interval=1)

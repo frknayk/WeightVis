@@ -4,9 +4,13 @@ from Utils.Bcolor import Bcolors
 from math import fabs
 from Utils.Debug_Levels import Debug_Levels as verbos
 import time
+from Libraries.Enums import NNLibs
+from Libraries.Torch import Torch
+from Libraries.Simplynet import SimplyNet
+from Libraries.Reader import Reader
+
 
 #TODO give credit to asian
-#TODO add verbosity levels for Bcolors 
 #TODO make docstring like numpy
 
 class Brain:
@@ -35,14 +39,14 @@ class Brain:
         - debug_level (Debug_Levels): Check levels on Debug_Levels.py
     """
 
-    def __init__(self, nn_weights, nn_bias_weights, show_weights=False, show_arrows=False,fig_size_x=12, 
+    def __init__(self, nn_lib,show_weights=False, show_arrows=False,fig_size_x=12, 
                 show_text=False,fig_size_y=12, debug_level = verbos.NO):
         '''
         Initialize brain.
 
         Parameters
         ----------
-        nn_weights : list
+        nn_lib : list
             Weights of the model.
 
         nn_bias_weights : list
@@ -52,7 +56,6 @@ class Brain:
         self.ax             = None
         
         # Figure sizes in percentage
-        #TODO When figure size increases, nodes become squished.
         self.fig            = None
         self.fig_size_x     = fig_size_x
         self.fig_size_y     = fig_size_y
@@ -63,8 +66,8 @@ class Brain:
         self.top            = 0.9
 
         self.offset_all     = [self.left, self.right, self.bottom, self.top]
-        self.weights        = nn_weights
-        self.bias_weights   = nn_bias_weights
+        self.weights        = None
+        self.bias_weights   = None
 
         self.n_layers       = None
         self.v_spacing      = None
@@ -76,12 +79,35 @@ class Brain:
 
         # Beautiful printing
         self.bcolors = Bcolors()
-
+        
+        # To see debugs, give higher number than 0
         self.debug_level = debug_level
         
+        # Initate limits of figure
         self.init_graph()
+        
+        # Neural network library reader
+        self.reader = Reader()
 
-    def visualize(self,torch_weights,loss_ = 999,n_iter_ = 1,interval=1):
+        # Set neural network library
+        self.set_lib(nn_lib)
+
+    def set_lib(self,nn_lib):
+        """Choose library to read neural network
+
+        Args:
+            nn_lib (Reader):
+        """
+        if nn_lib == NNLibs.Torch:
+            self.reader = Torch()
+
+        elif nn_lib == NNLibs.SimplyNet:
+            self.reader = SimplyNet()
+
+        elif nn_lib == NNLibs.Tensorflow:
+            pass
+
+    def visualize(self,weights,load_from_path=False,loss_ = 999.0,n_iter_ = 1,interval=1):
         '''
         Plot everything(nodes, edges, arrows, input, output)
 
@@ -93,9 +119,9 @@ class Brain:
         n_iter_: int
             Number of iterations/epochs.
         '''
-        self.weights        = torch_weights.weights_list
-        self.bias_weights   = torch_weights.biases_list
-        # self.ax  = self.fig.gca()
+        self.reader.read(weights)
+        self.weights        = self.reader.weights_list
+        self.bias_weights   = self.reader.biases_list
         self.ax.cla()
         self.ax.set_title("Loss : {0:.3} / Iteration : {1}".format(loss_,n_iter_))
         self.ax.axis('off')
@@ -109,6 +135,11 @@ class Brain:
         # plt.show()
         plt.pause(interval)
         plt.draw()
+
+        # If loading network from path, dont close figure after its drawn
+        if load_from_path:
+            self.bcolors.print_warning("Please press enter to close the figure.")
+            input()
         
 
     def init_graph(self):
@@ -345,6 +376,15 @@ class Brain:
         return weights / np.linalg.norm(weights)
 
     def get_alpha_and_color(self, normalized_weights):
+        """Get alpha(transparency) and color of weight
+
+        Args:
+            normalized_weights (np.ndarray)
+
+        Returns:
+            alpha_val (integer), color(string) 
+        """
+        color = 'g'
         # For positive values draw lines blue, for negative ones draw as red
         if normalized_weights < 0:
             alpha_val = -normalized_weights

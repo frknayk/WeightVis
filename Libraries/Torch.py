@@ -8,12 +8,12 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 from Utils.Bcolor import Bcolors
 from Utils.Debug_Levels import Debug_Levels as verbos
+from Libraries.Reader import Reader
+from Libraries.Enums import NNLibs
 
-class Read_Torch:
-  def __init__(self,weight_path=None,trained_weights=None,debug_level = verbos.NO):
+class Torch(Reader):
+  def __init__(self,debug_level = verbos.NO):
     self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    self.brain_path = weight_path
-    self.trained_weights = trained_weights  
     self.verbos_level = debug_level
     self.weights_all = None
     self.weight_names  = []
@@ -27,7 +27,23 @@ class Read_Torch:
     self.weights_list  = []
     self.biases_list   = []
 
-    self.load_weight()
+    self.weights_shape    = []
+    self.biases_shape     = []
+
+  def read(self,weights):
+    """Reset parameters, and read them again"""
+    self.weight_names  = []
+    self.bias_names    = []
+    self.weights       = []
+    self.biases        = []
+    self.weights_all = None
+    self.weights_shape = None
+    self.biases_shape = None
+    # Brain Vis wants all weights in this format
+    self.weights_list  = []
+    self.biases_list   = []
+
+    self.load_weight(weights)
     self.get_weights()
     self.print_layer_info()
     self.make_list_of_layers()
@@ -35,16 +51,19 @@ class Read_Torch:
     self.weights_shape    = [layer.shape for layer in self.weights_list]
     self.biases_shape     = [layer.shape for layer in self.biases_list]
 
+  def load_weight(self,weights=None,brain_path=None):
+    # If weights input is string, it should be string
+    if type(weights) is str:
+      brain_path = weights
 
-  def load_weight(self):
-    if self.brain_path is not None:
+    if brain_path is not None:
       try:
-        self.weights_all = torch.load(self.brain_path)
+        self.weights_all = torch.load(brain_path)
       except:
         self.bcolors.print_error("Neural network weights could not be loaded. Please check the path !")
     else:
       try:
-        self.weights_all = self.trained_weights
+        self.weights_all = weights
       except:
         self.bcolors.print_error("Trained weights could not be read !")
 
@@ -113,3 +132,7 @@ class Read_Torch:
     
     self.weights_list = weights_list_transposed
     self.biases_list  = biases_list_transposed
+
+    def get_lib(self):
+        """Get enumeration of lib"""
+        return NNLibs.Torch
