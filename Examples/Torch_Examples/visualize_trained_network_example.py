@@ -1,6 +1,5 @@
 from Visualizer.Brain import Brain
 from Libraries.Enums import NNLibs as Libs
-import time
 
 # Initate visualizer
 brain = Brain(nn_lib=Libs.Torch)
