@@ -1,11 +1,19 @@
 import numpy as np
 import pickle
+from Libraries.Enums import NNLibs
+from Libraries.Reader import Reader
 
-class Read_SimplyNet:
+#TODO Complete read() function for SimplyNet
+#TODO SimplyNet init(self,path) - path should go to read's parameter(like torch)
+
+class SimplyNet(Reader):
     def __init__(self,path):
         self.weights_list = []
         self.biases_list = []
         self.load_weights(path)
+
+    def read(self):
+        pass
 
     def get_weights(self,path):
         """Load weights and biases """
@@ -35,3 +43,7 @@ class Read_SimplyNet:
 
             self.weights_list.append(W)
             self.biases_list.append(b)
+    
+    def get_lib(self):
+        """Get enumeration of lib"""
+        return NNLibs.SimplyNet
