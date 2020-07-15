@@ -58,3 +58,4 @@ brain.visualize("path_your_pytorch_model", load_from_path=True)
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
 - The script was first moved from a github user's [@craffel] "draw_neural_net.py" script.
+
