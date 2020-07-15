@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='BrainVis',
+setup(name='WeightVis',
       version='0.1',
       description='Visualize neural networks with given weights by understanding automatically its structure',
       author='AbdKaan,frknayk',

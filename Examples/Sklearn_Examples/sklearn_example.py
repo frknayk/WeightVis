@@ -1,8 +1,7 @@
 import numpy as np
 from sklearn.neural_network import MLPRegressor as MLP
-
-
-from Visualizer.Brain import Brain 
+from Visualizer.Brain import Brain
+from Libraries.Enums import NNLibs as Libs
 
 
 X_train = np.random.rand(2,2)
@@ -37,5 +36,5 @@ XOR_MLP.fit(X_train,y_train)
 weights = XOR_MLP.coefs_
 biases_weights = XOR_MLP.intercepts_
 
-brain_MLP = Brain(weights,biases_weights)
-brain_MLP.visualize(XOR_MLP.loss_,XOR_MLP.n_iter_)
+brain_MLP = Brain(Libs.Sklearn)
+brain_MLP.visualize([weights,biases_weights],load_from_path=True)

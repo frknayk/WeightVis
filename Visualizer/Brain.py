@@ -7,6 +7,7 @@ import time
 from Libraries.Enums import NNLibs
 from Libraries.Torch import Torch
 from Libraries.Simplynet import SimplyNet
+from Libraries.Sklearn import Sklearn
 from Libraries.Reader import Reader
 
 
@@ -104,26 +105,33 @@ class Brain:
         elif nn_lib == NNLibs.SimplyNet:
             self.reader = SimplyNet()
 
+        elif nn_lib == NNLibs.Sklearn:
+            self.reader = Sklearn()
+
         elif nn_lib == NNLibs.Tensorflow:
             pass
 
-    def visualize(self,weights,load_from_path=False,loss_ = 999.0,n_iter_ = 1,interval=1):
+    def visualize(self,weights,load_from_path=False,loss_ = None,n_iter_ = None,interval=1):
         '''
         Plot everything(nodes, edges, arrows, input, output)
 
         Parameters
         ----------
-        loss_ : int
-            Brain's latest loss value.
-
-        n_iter_: int
-            Number of iterations/epochs.
+        loss_ (int) : Brain's latest loss value.
+        n_iter_ (int): Number of iterations/epochs.
+        load_from_path (bool) : Set true for keeping figure after visualization in directly vis from weights
         '''
         self.reader.read(weights)
         self.weights        = self.reader.weights_list
         self.bias_weights   = self.reader.biases_list
         self.ax.cla()
-        self.ax.set_title("Loss : {0:.3} / Iteration : {1}".format(loss_,n_iter_))
+        
+        # If loss or iter no is not given dont show title
+        if loss_ is None or n_iter_ is None:
+            pass
+        else:
+            self.ax.set_title("Loss : {0:.3} / Iteration : {1}".format(loss_,n_iter_))
+
         self.ax.axis('off')
         self.set_figure()
         self.plot_input_arrows()
