@@ -1,4 +1,4 @@
-# Brain_Visualizer
+# WeightVis
 Visualize a trained neural network weights from different libraries
 
 ## Installation 
