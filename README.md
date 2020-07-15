@@ -29,7 +29,7 @@ Visualize a trained neural network weights from different libraries
 4. Long term TODO : 3D visualisation
 
 ## Contribution <a name = "contributing"></a>
-- Please send an email to furkanayik@outlook.com for contribution or any feedback
+- Please send an email to furkanayik@outlook.com or abdu.kaan@gmail.com for contribution or any feedback
 
 ## ✍️ Authors <a name = "authors"></a>
 

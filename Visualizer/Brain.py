@@ -40,8 +40,8 @@ class Brain:
         - debug_level (Debug_Levels): Check levels on Debug_Levels.py
     """
 
-    def __init__(self, nn_lib,show_weights=False, show_arrows=False,fig_size_x=12, 
-                show_text=False,fig_size_y=12, debug_level = verbos.NO):
+    def __init__(self, nn_lib, show_weights=False, show_arrows=False, show_text=False, 
+                fig_size_x=12, fig_size_y=12, debug_level=verbos.NO):
         '''
         Initialize brain.
 
@@ -111,7 +111,7 @@ class Brain:
         elif nn_lib == NNLibs.Tensorflow:
             pass
 
-    def visualize(self,weights,load_from_path=False,loss_ = None,n_iter_ = None,interval=1):
+    def visualize(self, weights, load_from_path=False, loss_ = None, n_iter_ = None, interval=1):
         '''
         Plot everything(nodes, edges, arrows, input, output)
 

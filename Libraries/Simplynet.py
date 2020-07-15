@@ -3,6 +3,9 @@ import pickle
 from Libraries.Enums import NNLibs
 from Libraries.Reader import Reader
 
+#TODO Complete read() function for SimplyNet
+#TODO SimplyNet init(self,path) - path should go to read's parameter(like torch)
+
 class SimplyNet(Reader):
     def __init__(self,path):
         self.weights_list = []
