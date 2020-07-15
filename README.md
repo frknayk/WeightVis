@@ -17,7 +17,26 @@ Visualize a trained neural network weights from different libraries
 - Supported Libraries : Pytorch, Sklearn and SimplyNet(https://github.com/frknayk/SimplyNet)
 - Tensorflow will be integrated soon !
 
-## Intallation <a name = "getting_started"></a>
+## Usage <a name = "usage"></a>
+
+- Simplest example with pytorch
+
+```
+from Visualizer.Brain import Brain
+from Libraries.Enums import NNLibs as Libs
+
+# Initate visualizer
+brain = Brain(nn_lib=Libs.Torch)
+
+# Visualize neural network
+brain.visualize("path_your_pytorch_model", load_from_path=True)
+```
+
+- Output
+
+<img width=640px height=480px src="images\pytorch_output.png" alt="Project logo">
+
+## Installation <a name = "getting_started"></a>
 
 - pip3 install -e .
 
