@@ -44,8 +44,9 @@ brain.visualize("path_your_pytorch_model", load_from_path=True)
 
 1. Tensorflow is incoming !
 2. Extend library to CNNs 
-3. Arise warning when neura-network size exceeds limits of library 
+3. Arise warning when neural-network size exceeds limits of library 
 4. Long term TODO : 3D visualisation
+5. Give NN library as string instead of giving with NNLibs enumaration 
 
 ## Contribution <a name = "contributing"></a>
 - Please send an email to furkanayik@outlook.com or abdu.kaan@gmail.com for contribution or any feedback
