@@ -133,6 +133,6 @@ class Torch(Reader):
     self.weights_list = weights_list_transposed
     self.biases_list  = biases_list_transposed
 
-    def get_lib(self):
-        """Get enumeration of lib"""
-        return NNLibs.Torch
+  def get_lib(self):
+      """Get enumeration of lib"""
+      return NNLibs.Torch
