@@ -46,7 +46,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 X_train = torch.randn(100,32).to(device)
 Y_train = torch.randn(100,1).to(device)
 
-# Initate visualizer
+# Initiate visualizer
 brain = Brain(nn_lib=Libs.Torch)
 
 # Train the model

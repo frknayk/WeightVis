@@ -6,6 +6,7 @@ from Utils.Debug_Levels import Debug_Levels as verbos
 import time
 from Libraries.Enums import NNLibs
 from Libraries.Torch import Torch
+from Libraries.Tensorflow import Tensorflow
 from Libraries.Simplynet import SimplyNet
 from Libraries.Sklearn import Sklearn
 from Libraries.Reader import Reader
@@ -13,6 +14,7 @@ from Libraries.Reader import Reader
 
 #TODO give credit to asian
 #TODO make docstring like numpy
+#TODO Library imports should be done with conditions(only import needed library in case user doesn't have another library)
 
 class Brain:
     """
@@ -109,7 +111,7 @@ class Brain:
             self.reader = Sklearn()
 
         elif nn_lib == NNLibs.Tensorflow:
-            pass
+            self.reader = Tensorflow()
 
     def visualize(self, weights, load_from_path=False, loss_ = None, n_iter_ = None, interval=1):
         '''
@@ -140,7 +142,6 @@ class Brain:
         self.plot_edge_node_connections()
         self.plot_bias_edge_connections()
         self.plot_output_arrows(loss_,n_iter_)
-        # plt.show()
         plt.pause(interval)
         plt.draw()
 
@@ -148,7 +149,6 @@ class Brain:
         if load_from_path:
             self.bcolors.print_warning("Please press enter to close the figure.")
             input()
-        
 
     def init_graph(self):
         '''
