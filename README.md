@@ -1,21 +1,11 @@
 # WeightVis
 Visualize a trained neural network weights from different libraries
 
-## Table of Contents
-
-- [About](#about)
-- [Intallation Started](#getting_started)
-- [TODO](#todo)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [Acknowledgements](#acknowledgement)
-
 ## About <a name = "about"></a>
 
 - Load neural network weights, WeightVis will automatically visualize the neural network weights ! 
-- For now the library works with only for fully connected layers
+- For now the library works with only for MLPs (Multi Layer Perceptrons)
 - Supported Libraries : Pytorch, Sklearn and SimplyNet(https://github.com/frknayk/SimplyNet)
-- Tensorflow will be integrated soon !
 
 ## Usage <a name = "usage"></a>
 
